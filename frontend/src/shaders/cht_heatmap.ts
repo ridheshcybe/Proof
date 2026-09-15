@@ -154,7 +154,7 @@ export function createCHTShaderMaterial(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     vertexShader: chtVertexShader,
     fragmentShader: chtFragmentShader,
-    uniforms: uniforms as unknown as THREE.Uniforms,
+    uniforms: uniforms as unknown as Record<string, THREE.IUniform>,
     side: THREE.DoubleSide,
   });
 }

@@ -19,18 +19,18 @@ afterEach(() => {
 // ══════════════════════════════════════════════════════════════════════════════
 
 // Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0));
-global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
+globalThis.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0));
+globalThis.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
 
 // Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+globalThis.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
@@ -89,7 +89,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((type) => {
 });
 
 // Mock AudioContext
-global.AudioContext = vi.fn().mockImplementation(() => ({
+globalThis.AudioContext = vi.fn().mockImplementation(() => ({
   state: 'running',
   currentTime: 0,
   destination: {},
@@ -118,8 +118,8 @@ global.AudioContext = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock window.URL.createObjectURL
-global.URL.createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
-global.URL.revokeObjectURL = vi.fn();
+globalThis.URL.createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
+globalThis.URL.revokeObjectURL = vi.fn();
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Console suppression (optional)

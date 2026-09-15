@@ -14,7 +14,7 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -24,7 +24,6 @@ import userEvent from '@testing-library/user-event';
 // ══════════════════════════════════════════════════════════════════════════════
 
 const MOCK_WS_URL = 'ws://localhost:19080';
-const MOCK_HTTP_PORT = 19081;
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Mock Data Generators
@@ -68,91 +67,6 @@ function generateMockFrame(overrides?: Partial<any>) {
     },
     ...overrides,
   };
-}
-
-function generateMockFrameWithRUL(rulMinutes: number) {
-  return generateMockFrame({
-    prognostics: {
-      predicted_rul_min: rulMinutes,
-      rtb_alert_level: rulMinutes <= 10 ? 'RTB_CRITICAL' : 
-                       rulMinutes <= 30 ? 'RTB_ADVISORY' : 'NONE',
-      rtb_window_active: rulMinutes <= 30,
-    },
-  });
-}
-
-function generateMockFrameWithAnomaly(score: number) {
-  return generateMockFrame({
-    anomaly: {
-      score,
-      is_detected: score > 50,
-      top_contributing_sensors: score > 50 ? ['CHT_2', 'EGT_1'] : [],
-    },
-    health: {
-      ehi: Math.max(20, 100 - score),
-      combustion_efficiency: 90,
-      thermal_balance_spread: 5,
-      status: score > 70 ? 'CRITICAL' : score > 50 ? 'WARNING' : 'NORMAL',
-    },
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// Mock WebSocket Server
-// ══════════════════════════════════════════════════════════════════════════════
-
-class MockWebSocketServer {
-  private clients: Set<any> = new Set();
-  private messageHandlers: ((data: string) => void)[] = [];
-
-  on(event: string, handler: any) {
-    if (event === 'connection') {
-      this.messageHandlers.push(handler);
-    }
-  }
-
-  simulateClientConnection() {
-    const mockWs = {
-      readyState: 1, // OPEN
-      send: vi.fn(),
-      close: vi.fn(),
-      onmessage: null as any,
-      onclose: null as any,
-    };
-
-    this.clients.add(mockWs);
-    this.messageHandlers.forEach((handler) => handler(mockWs));
-
-    return mockWs;
-  }
-
-  broadcastFrame(frame: any) {
-    const message = JSON.stringify(frame);
-    this.clients.forEach((client) => {
-      if (client.onmessage) {
-        client.onmessage({ data: message });
-      }
-    });
-  }
-
-  getReceivedCommands() {
-    const commands: any[] = [];
-    this.clients.forEach((client) => {
-      if (client.send.mock) {
-        client.send.mock.calls.forEach((call: any[]) => {
-          try {
-            commands.push(JSON.parse(call[0]));
-          } catch (e) {}
-        });
-      }
-    });
-    return commands;
-  }
-
-  reset() {
-    this.clients.clear();
-    this.messageHandlers = [];
-  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -200,7 +114,7 @@ vi.mock('@react-three/drei', () => ({
 
 // Mock Chart.js
 vi.mock('react-chartjs-2', () => ({
-  Line: ({ data, options }: any) => (
+  Line: ({ data }: any) => (
     <div data-testid="chart-line" data-chart-data={JSON.stringify(data)}>
       Mock Chart
     </div>
@@ -223,7 +137,7 @@ vi.mock('chart.js', () => ({
 
 // Mock fetch
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch;
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Test Helpers
@@ -261,8 +175,7 @@ function RTBTestConsumer({ rulMinutes }: { rulMinutes: number }) {
 // Import components after mocks
 import { 
   TelemetryProvider, 
-  useTelemetry,
-  type TelemetryFrame 
+  useTelemetry 
 } from '../context/TelemetryContext';
 import ReturnToBaseHUD from '../components/dashboard/ReturnToBaseHUD';
 import Engine3DView from '../components/digital_twin/Engine3DView';
@@ -292,7 +205,7 @@ describe('TelemetryContext WebSocket Flow', () => {
       onerror: null,
     };
     
-    (global as any).WebSocket = vi.fn().mockImplementation(() => mockWs);
+    (globalThis as any).WebSocket = vi.fn().mockImplementation(() => mockWs);
   });
 
   it('should establish WebSocket connection', async () => {
@@ -304,7 +217,7 @@ describe('TelemetryContext WebSocket Flow', () => {
 
     // Wait for connection attempt
     await waitFor(() => {
-      expect(global.WebSocket).toHaveBeenCalledWith(MOCK_WS_URL);
+      expect(globalThis.WebSocket).toHaveBeenCalledWith(MOCK_WS_URL);
     });
   });
 
@@ -652,7 +565,7 @@ describe('Judge Panel Fault Triggers', () => {
       onerror: null,
     };
     
-    (global as any).WebSocket = vi.fn().mockImplementation(() => mockWs);
+    (globalThis as any).WebSocket = vi.fn().mockImplementation(() => mockWs);
   });
 
   it('should render fault injection buttons', async () => {
@@ -793,7 +706,7 @@ describe('Judge Panel Fault Triggers', () => {
   it('should show fault descriptions', () => {
     const MockApp = () => (
       <div>
-        <p>EGT spike > 850°C</p>
+        <p>EGT spike {'>'} 850°C</p>
         <p>RPM drop + vibration increase</p>
         <p>Oil P drop + CHT rise</p>
         <p>Test isolation detection</p>

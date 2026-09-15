@@ -10,7 +10,7 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TelemetryProvider, useTelemetry, type ConnectionStatus } from './context/TelemetryContext';
 import { ToastProvider, useToast } from './components/ui/Toast';
 import { useAudioAlarm } from './hooks/useAudioAlarm';
@@ -34,15 +34,12 @@ import {
   Activity,
   Wifi,
   WifiOff,
-  Clock,
   Layers,
   Box,
   AlertTriangle,
-  Settings,
   ChevronUp,
   ChevronDown,
   X,
-  Download,
   Flame,
   Settings2,
   Droplets,
@@ -149,7 +146,7 @@ function DemoControlPanel({ isOpen, onToggle }: DemoControlPanelProps) {
               <Flame className="w-5 h-5 text-hud-amber group-hover:animate-pulse" />
               <div className="text-left">
                 <p className="text-sm font-medium text-hud-amber">Inject Lean Burn Runaway</p>
-                <p className="text-xs text-cockpit-muted">EGT spike > 850°C</p>
+                <p className="text-xs text-cockpit-muted">EGT spike {'>'} 850°C</p>
               </div>
             </button>
 
@@ -227,13 +224,12 @@ function IncidentLogModal({ isOpen, onClose }: IncidentLogModalProps) {
       if (response.ok) {
         const text = await response.text();
         const lines = text.trim().split('\n');
-        const headers = lines[0].split(',');
         
         const entries = lines.slice(1).map((line) => {
           const values = line.split(',');
           return {
             timestamp: values[0] || '',
-            frame_id: values[1] || '',
+            frame_id: parseInt(values[1] || '0', 10),
             event_type: values[2] || '',
             severity: values[3] || '',
             ehi: values[4] || '',

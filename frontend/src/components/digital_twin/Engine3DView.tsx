@@ -12,13 +12,13 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { useTelemetry } from '../../context/TelemetryContext';
 import { createCHTShaderMaterial, type CHTShaderUniforms } from '../../shaders/cht_heatmap';
-import { RotateCcw, ZoomIn, Eye, Layers, Camera } from 'lucide-react';
+import { RotateCcw, Layers, Camera } from 'lucide-react';
 import clsx from 'clsx';
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -434,7 +434,6 @@ export default function Engine3DView({
   const [cameraPreset, setCameraPreset] = useState<CameraPreset>(CAMERA_PRESETS[0]);
   const [autoRotate, setAutoRotate] = useState(true);
   const [explodedView, setExplodedView] = useState(0);
-  const [showWireframe, setShowWireframe] = useState(false);
   
   // RPM for status display
   const rpm = currentFrame?.rpm ?? 0;

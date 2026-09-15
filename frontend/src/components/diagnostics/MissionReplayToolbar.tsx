@@ -10,7 +10,7 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useTelemetry, type TelemetryFrame } from '../../context/TelemetryContext';
 import {
   Play,
@@ -18,8 +18,6 @@ import {
   SkipBack,
   SkipForward,
   RotateCcw,
-  AlertTriangle,
-  Zap,
   Clock,
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -62,15 +60,12 @@ export default function MissionReplayToolbar({
   onFrameSelect,
 }: MissionReplayToolbarProps) {
   const {
-    isReplayMode,
     replayData,
     replayIndex,
     replaySpeed,
     startReplay,
-    stopReplay,
     setReplaySpeed,
     seekReplay,
-    sendCommand,
   } = useTelemetry();
   
   // Local state

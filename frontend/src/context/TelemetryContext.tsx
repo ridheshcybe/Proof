@@ -158,7 +158,7 @@ export function TelemetryProvider({
 
   // ─── Refs ──────────────────────────────────────────────────────────────
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingFrameRef = useRef<TelemetryFrame | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const previousFrameRef = useRef<TelemetryFrame | null>(null);

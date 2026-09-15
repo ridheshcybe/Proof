@@ -383,7 +383,6 @@ export class AudioAlarmService {
     
     const period = 1 / pulseRate;
     const onTime = period * dutyCycle;
-    const offTime = period * (1 - dutyCycle);
     
     // Create repeating pattern
     const scheduleNextPulse = (startTime: number) => {

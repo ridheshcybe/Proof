@@ -9,7 +9,6 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useMemo } from 'react';
 import { useTelemetry } from '../../context/TelemetryContext';
 import { AlertTriangle, Clock, Shield } from 'lucide-react';
 import clsx from 'clsx';
@@ -21,6 +20,8 @@ import clsx from 'clsx';
 interface ReturnToBaseHUDProps {
   className?: string;
   showDetails?: boolean;
+  /** Optional override — when provided, takes precedence over live telemetry. */
+  rulMinutes?: number;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -30,11 +31,12 @@ interface ReturnToBaseHUDProps {
 export default function ReturnToBaseHUD({
   className,
   showDetails = true,
+  rulMinutes: rulMinutesOverride,
 }: ReturnToBaseHUDProps) {
   const { currentFrame } = useTelemetry();
   
-  // Extract RUL and RTB status
-  const rulMinutes = currentFrame?.prognostics?.predicted_rul_min ?? null;
+  // Extract RUL and RTB status (prop override wins, used by tests)
+  const rulMinutes = rulMinutesOverride ?? currentFrame?.prognostics?.predicted_rul_min ?? null;
   const rtbAlertLevel = currentFrame?.prognostics?.rtb_alert_level ?? 'NONE';
   const rtbWindowActive = currentFrame?.prognostics?.rtb_window_active ?? false;
   

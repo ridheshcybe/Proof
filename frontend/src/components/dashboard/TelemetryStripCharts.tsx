@@ -10,7 +10,7 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -55,9 +55,6 @@ interface TelemetryStripChartsProps {
 // ══════════════════════════════════════════════════════════════════════════════
 // Constants
 // ══════════════════════════════════════════════════════════════════════════════
-
-const MAX_DATA_POINTS = 600; // 60 seconds at 10 Hz
-const UPDATE_INTERVAL = 100; // 10 Hz
 
 const CHART_COLORS = {
   cyl1: '#06b6d4', // Cyan

@@ -9,7 +9,7 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTelemetry } from '../../context/TelemetryContext';
 import clsx from 'clsx';
 

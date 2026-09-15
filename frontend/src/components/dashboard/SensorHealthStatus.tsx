@@ -8,9 +8,9 @@
 //
 // ══════════════════════════════════════════════════════════════════════════════
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTelemetry } from '../../context/TelemetryContext';
-import { Activity, Thermometer, Gauge, Droplets, AlertCircle } from 'lucide-react';
+import { Activity, Thermometer, Droplets, AlertCircle } from 'lucide-react';
 import clsx from 'clsx';
 
 // ══════════════════════════════════════════════════════════════════════════════
